@@ -4,4 +4,8 @@
     <debug>true</debug>
     <LogFile Name="Default" />
     <Setting1 Name="Value" Type="Value" />
+    <AD1>
+        <DC Name="dc1.test.local" />
+        <Filter Pattern="test.ot*" />
+    </AD1>
 </Configuration>

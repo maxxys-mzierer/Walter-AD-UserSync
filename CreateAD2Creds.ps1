@@ -1,0 +1,1 @@
+Get-Credential | Export-Clixml -Path ".\AD1Creds.xml"
