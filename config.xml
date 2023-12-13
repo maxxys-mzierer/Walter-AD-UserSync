@@ -3,9 +3,8 @@
 <Configuration>
     <debug>true</debug>
     <LogFile Name="Default" />
-    <Setting1 Name="Value" Type="Value" />
-    <AD1>
-        <DC Name="dc1.test.local" />
-        <Filter Pattern="test.ot*" />
+    <AD1 DC="dc1.test.local" DN="DC=test,DC=local" OUList="OU1,OU2">
+        <OU1 Name="1111" GroupNames="DEMU,DETU" Pattern="testot" />
+        <OU2 Name="2222" GroupNames="DEMU,DETU" Pattern="testot" />
     </AD1>
 </Configuration>
