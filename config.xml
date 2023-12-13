@@ -7,4 +7,7 @@
         <OU1 Name="1111" GroupNames="DEMU,DETU" Pattern="testot" />
         <OU2 Name="2222" GroupNames="DEMU,DETU" Pattern="testot" />
     </AD1>
+    <AD2 DC="dc2.adtest.local" DN="" OUList="">
+
+    </AD2>
 </Configuration>

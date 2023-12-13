@@ -225,6 +225,31 @@ Remove-Variable -Name AD1CredsExist
 Write-Log -Message "end region Read Info from AD1"
 #endregion 
 
+#region write Data to AD2
+Write-Log -Message "::"
+Write-Log -Message "start region write data to AD2"
+
+##check if credentials exist
+Write-Log -Message "Import AD2 Credentials from file"
+$AD2CredsExist = Test-Path -Path $here\AD2Creds.xml
+if (!($AD2CredsExist)) {
+  <# Action to perform if the condition is true #>
+  Write-Log -Message "Credentials for ActiveDirectory 2 have not been created. Exit script now."
+  Write-Log -Message '-------------------------------- End -------------------------------'
+  Remove-Variable -Name AD2CredsExist
+  break
+} else {
+  <# Action when all if and elseif conditions are false #>
+  Write-Log -Message "Importing existing Credentials from XML file"
+  $AD2Creds = Import-Clixml -Path $here\AD2Creds.xml
+}
+Write-Log -Message ('Credentials of {0} successfully imported' -f $AD2Creds.UserName)
+
+
+
+
+Write-Log -Message "end region write data to AD2"
+#endregion
 
 #region Cleanup
 Remove-Variable -Name AD1GroupsToProcess
