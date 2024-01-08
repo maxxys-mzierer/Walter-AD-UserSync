@@ -82,6 +82,7 @@ function Get-Group {
   Write-Log -Message "start function Get-Group"
   Write-Log -Message ('authenticate at {0} using {1}' -f $Server,$Credentials.Username)
   $Filter = "Name -like '" + $Pattern + "'"
+  Write-Log -Message ('searching for group {0} in {1}' -f $Pattern,$SearchBase)
   [array]$ADGroups = @()
   $ADGroups = Get-ADGroup -Server $Server -Credential $Credentials -Filter $Filter -SearchBase $SearchBase
 
@@ -118,7 +119,7 @@ Write-Log -Message "start region read data from XML file"
 [string]$AD1DCName = $DataSource.Configuration.AD1.DC
 [string]$AD1DN = $DataSource.Configuration.AD1.DN
 [string]$AD1GroupFilter = $DataSource.Configuration.AD1.Filter.Pattern
-[array]$AD1OUList = $DataSource.Configuration.AD1.OUList
+[array]$AD1OUList = $DataSource.Configuration.AD1
 
 # dump Variables used:
 Write-Log -Message "Dumping read values to Log..."
@@ -126,8 +127,8 @@ Write-Log -Message ('Current User Context:            {0}' -f $CurrentUser)
 Write-Log -Message ('AD1 DC Name:                     {0}' -f $AD1DCName)
 Write-Log -Message ('AD1 DN:                          {0}' -f $AD1DN)
 #Write-Log -Message ('AD1 Group Filter:                {0}' -f $AD1GroupFilter)
-Write-Log -Message ('AD1 OU List:                     {0}' -f $AD1OUList)
-#foreach ($Service in $DataSource.Configuration.Service){Write-Log -Message ('Service Name:                    {0}' -f $Service.Name)}
+#Write-Log -Message ('AD1 OU List:                     {0}' -f $AD1OUList)
+foreach ($OU in $DataSource.Configuration.AD1.OU){Write-Log -Message ('AD1 OU Name:                    {0}' -f $OU.Name)}
 Write-Log -Message "end region read data from XML file"
 #endregion
 
@@ -167,12 +168,13 @@ Write-Log -Message ('Credentials of {0} successfully imported' -f $AD1Creds.User
 ## read groups from AD1
 [array]$AD1GroupsToProcess = @()
 #[array]$OUs = @()
-$collection = $AD1OUList.Split(',')
+#$collection = $AD1OUList.Split(',')
+$collection = $DataSource.Configuration.AD1.OU
 
 ##query groups for each OU found
-foreach ($currentItemName in $collection) {
+foreach ($currentItemName in $DataSource.Configuration.AD1.OU) {
   <# $currentItemName is the current item #>
-  $currentItemName = $DataSource.Configuration.AD1.$currentItemName
+  #$currentItemName = $DataSource.Configuration.AD1.$currentItemName
   $SearchPath = "OU=" + $currentItemName.Name + "," + $AD1DN
   $Patternlist = ($currentItemName.GroupNames).Split(',')
   

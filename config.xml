@@ -3,11 +3,12 @@
 <Configuration>
     <debug>true</debug>
     <LogFile Name="Default" />
-    <AD1 DC="dc1.test.local" DN="DC=test,DC=local" OUList="OU1,OU2">
-        <OU1 Name="1111" GroupNames="DEMU,DETU" Pattern="testot" />
-        <OU2 Name="2222" GroupNames="DEMU,DETU" Pattern="testot" />
+    <AD1 DC="win.dom.sandvik.com" DN="DC=win,DC=dom,DC=sandvik,DC=com" OUList="OU1,OU2,OU3">
+        <OU Name="3422" GroupNames="DEFR,DENI,DEMU,DERT,DETU,DEZE" Pattern="Walter.OT" />
+        <OU Name="3428" GroupNames="DEFR,DENI,DEMU,DERT,DETU,DEZE" Pattern="Walter.OT" />
+        <OU Name="3434" GroupNames="DEFR,DENI,DEMU,DERT,DETU,DEZE" Pattern="Walter.OT" />
     </AD1>
-    <AD2 DC="dc2.adtest.local" DN="" OUList="">
+    <AD2 DC="ot.local" DN="" OUList="">
 
     </AD2>
 </Configuration>
