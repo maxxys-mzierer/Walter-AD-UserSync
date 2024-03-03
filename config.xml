@@ -4,11 +4,11 @@
     <debug>true</debug>
     <LogFile Name="Default" />
     <AD1 DC="win.dom.sandvik.com" DN="DC=win,DC=dom,DC=sandvik,DC=com" OUList="OU1,OU2,OU3">
-        <OU Name="3422" GroupNames="DEFR,DENI,DEMU,DERT,DETU,DEZE" Pattern="Walter.OT" />
-        <OU Name="3428" GroupNames="DEFR,DENI,DEMU,DERT,DETU,DEZE" Pattern="Walter.OT" />
-        <OU Name="3434" GroupNames="DEFR,DENI,DEMU,DERT,DETU,DEZE" Pattern="Walter.OT" />
+        <OU Name="3422" GroupNames="DEFR,DENI,DEMU,DERT,DETU,DEZE" Pattern="\.OT\." />
+        <OU Name="3428" GroupNames="DEFR,DENI,DEMU,DERT,DETU,DEZE" Pattern="\.OT\." />
+        <OU Name="3434" GroupNames="DEFR,DENI,DEMU,DERT,DETU,DEZE" Pattern="\.OT\." />
     </AD1>
-    <AD2 DC="ot.local" DN="" OUList="">
+    <AD2 DC="ot.local" DN="DC=ot,DC=local" OUList="">
 
     </AD2>
 </Configuration>
