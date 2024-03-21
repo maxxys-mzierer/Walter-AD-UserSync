@@ -404,7 +404,7 @@ foreach ($currentItemName in $collection) {
   #$UsersToCreate = Get-ADGroupMember -Server $AD1DCName -Credential $AD1Creds -Identity $currentItemName
   #cleanup
   Remove-Variable -Name CreatePath
-  Remove-Variable -Name GroupName
+  #Remove-Variable -Name GroupName
   Remove-Variable -Name GroupsReturned
   Remove-Variable -Name OUName
   Remove-Variable -Name SearchPath
