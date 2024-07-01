@@ -91,8 +91,8 @@ function Get-Group {
   Remove-Variable -Name Filter
   Remove-Variable -Name Server
   Remove-Variable -Name Pattern
-  Return $ADGroups
   Write-Log -Message "end function Get-Group"
+  Return $ADGroups
 }
 
 function New-OU {
@@ -135,8 +135,16 @@ function New-User {
     $SAM = "default"
   )
   Write-Log -Message "start function New-User"
-  $Pwd = ConvertTo-SecureString $Password -AsPlainText -Force
-  New-ADUser -Name $Name -AccountPassword $Pwd -Enabled 1 -Path $Path -SamAccountName $SAM
+  #check if user already exist
+  $CheckUser = $(try {Get-ADUser -Identity $SAM} catch {$null})
+  if ($CheckUser -ne $null) {
+    <# Action to perform if the condition is true #>
+    Write-Log -Message ('User {0}, {1} already exist, skip creation' -f $Name,$SAM)
+  } else {
+    $Pwd = ConvertTo-SecureString $Password -AsPlainText -Force
+    New-ADUser -Name $Name -AccountPassword $Pwd -Enabled 1 -Path $Path -SamAccountName $SAM
+    Write-Log -Message ('User {0}, {1} created' -f $Name,$SAM)
+  }
   Write-Log -Message "end function New-User"
 }
 #endregion
@@ -305,7 +313,7 @@ foreach ($currentItemName in $collection) {
 }
 
 ##for development only
-$FoundUsers = Get-ADUser -Filter * -SearchBase "OU=Users,OU=3428,DC=win,DC=dom,DC=sandvik,DC=com" -Server $AD1DCName -Credential $AD1Creds
+#$FoundUsers = Get-ADUser -Filter * -SearchBase "OU=Users,OU=3428,DC=win,DC=dom,DC=sandvik,DC=com" -Server $AD1DCName -Credential $AD1Creds
 
 ##cleanup query users
 Remove-Variable -Name collection
@@ -351,9 +359,9 @@ foreach ($currentItemName in $DataSource.configuration.AD1.OU) {
   } else {
     Write-Log -Message ('OU {0} does not exist. Start creation' -f $Identity)
     New-OU -Name ($currentItemName.Name) -Path $AD2DN -Server $AD2DCName -Credentials $AD2Creds
-    New-OU -Name "computers" -Path $Identity
-    New-OU -Name "groups" -Path $Identity
-    New-OU -Name "users" -Path $Identity
+    New-OU -Name "computers" -Path $Identity -Server $AD2DCName -Credentials $AD2Creds
+    New-OU -Name "groups" -Path $Identity -Server $AD2DCName -Credentials $AD2Creds
+    New-OU -Name "users" -Path $Identity -Server $AD2DCName -Credentials $AD2Creds
   }
 
   ##cleanup
@@ -392,15 +400,19 @@ foreach ($currentItemName in $collection) {
 
   #Read & Create users
   Write-Log -Message "Read Group members and create them"
-  $UsersToCreate = Get-ADGroupMember -Server $AD1DCName -Credential $AD1Creds -Identity "CN=DEMU3422.3422_groups_Projects_RedSea_mod,OU=Groups,OU=3422,DC=win,DC=dom,DC=sandvik,DC=com"
+  #$UsersToCreate = Get-ADGroupMember -Server $AD1DCName -Credential $AD1Creds -Identity "CN=DEMU3422.3422_groups_Projects_RedSea_mod,OU=Groups,OU=3422,DC=win,DC=dom,DC=sandvik,DC=com"
+  $UsersToCreate = Get-ADGroupMember -Server $AD1DCName -Credential $AD1Creds -Identity $currentItemName.DistinguishedName
   foreach ($User in $UsersToCreate) {
     <# $User is tUsersTo$UsersToCreate item #>
     $CreatePath = "OU=users," + $SearchPath
     $UserName = $User.Name
     $UserSAM = $User.SamAccountName
     New-User -Name $UserName -SAM $UserSAM -Path $CreatePath
+    Add-ADGroupMember -Identity $currentItemName.Name -Members $UserSAM
   }
 
+  #Disable no removed users
+  Write-Log -Message "Disable removed users"
   #$UsersToCreate = Get-ADGroupMember -Server $AD1DCName -Credential $AD1Creds -Identity $currentItemName
   #cleanup
   Remove-Variable -Name CreatePath
@@ -417,6 +429,7 @@ foreach ($currentItemName in $collection) {
 Write-Log -Message "end creating AD Groups"
 
 Write-Log -Message "end region write data to AD2"
+Write-Log -Message "::"
 #endregion
 
 #region Cleanup
